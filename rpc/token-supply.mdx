@@ -1,0 +1,35 @@
+---
+title: "Get token supply"
+description: "Get token supply details."
+---
+
+`GET /token_supply`
+
+```python
+r = requests.get(rpc_url + "/token_supply")
+print(r.json())
+```
+
+## Response
+
+```json
+{
+  "genesis_supply": "3000000000000000000000000",
+  "burned": "1404000000000000",
+  "total_supply": "2999999998596000000000000",
+  "decimals": 18
+}
+```
+
+| Field | Type | Description |
+| --- | --- | --- |
+| `genesis_supply` | string | Supply at genesis |
+| `burned` | string | Total amount burned |
+| `total_supply` | string | Current total supply |
+| `decimals` | number | Number of decimals. With 18 decimals, `1000000000000000000` base units equal 1 token |
+
+In this example, `total_supply` equals `genesis_supply` minus `burned`.
+
+<Note>
+  More fields may be added in the future.
+</Note>

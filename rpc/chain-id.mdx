@@ -1,0 +1,21 @@
+---
+title: "Get chain ID"
+description: "Get the chain identifier."
+---
+
+`GET /chainid`
+
+```python
+r = requests.get(rpc_url + "/chainid")
+print(r.json())
+```
+
+## Response
+
+```json
+{
+  "chainid": 1
+}
+```
+
+Use this value for the `chainid` field of your transaction.

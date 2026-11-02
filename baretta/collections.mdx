@@ -1,0 +1,165 @@
+---
+title: "Lists and dicts"
+description: "How to create and use lists and dicts in Baretta."
+---
+
+In Baretta, a list holds values of one type, and a dict has one key type and one value type. You can create them automatically or manually.
+
+## Automatic
+
+In normal Python, you can mix types freely:
+
+```python
+hello = {"key": "value", "num": 2, "gc": True}
+myf = [True, None, "hello", 1, 2, 3, 4]
+```
+
+In Baretta, the translator reads the first element and sets the type from it. Any element with a different type is rejected.
+
+```python
+hello = {
+    "key": "value",  # registers a dict with (key: str, value: str)
+    "num": 2,        # rejected: the value is an int, not a str
+}
+
+myf = [
+    True,     # registers a list of bool
+    None,     # rejected
+    "hello",  # rejected
+]
+```
+
+## Manual
+
+You can also set the types yourself.
+
+```python
+hello = dict(str, uint256)  # a dict with (key: str, value: uint256)
+hello.reserve(40)           # reserve 40 slots (optional)
+
+# or in one line
+hello = dict(str, uint256).reserve(40)
+
+hello.update("name", 5872)
+hello.raw_update(
+    {"a": 0, "b": 1, "c": 2}
+)
+```
+
+Lists work the same way:
+
+```python
+myf = list(str)
+myf.reserve(10)  # reserve 10 slots (optional)
+
+# or in one line
+myf = list(str).reserve(10)
+
+myf.append("name")
+myf.extend(["n", "p"])
+```
+
+## Reading values
+
+A key (or an index) might not exist, so Baretta gives you three ways to read a value. Pick the one that matches what you want to happen when it is missing.
+
+| Style | Returns | If the key is missing |
+| --- | --- | --- |
+| `hello["name"]` | the value | the program crashes (reverts on-chain) |
+| `hello.get("name", 0)` | the value | uses the default you gave |
+| `hello.get("name")` | the value | uses the default of the value type |
+| `hello.find("name")` | a [Lookup](/baretta/lookup) | the Lookup holds an error |
+
+No style ever returns `None`. The only ways a read can fail are `hello[key]`, which is fatal, and `find`, which you handle yourself.
+
+### Index: `hello[key]`
+
+Use this when the key must exist.
+
+```python
+balance = hello["name"]  # the value, or a crash if "name" is missing
+```
+
+<Warning>
+  A missing key stops the program. On a node, the whole transaction is reverted. In the terminal, Baretta prints the reason and exits with an error code.
+</Warning>
+
+### `get` with a default
+
+Use this when you always want a value.
+
+```python
+balance = hello.get("name", 0)
+```
+
+The compiler checks the default against the value type of the dict, so a wrong default is rejected before the program runs:
+
+```python
+hello = dict(str, uint256)
+
+hello.get("name", 0)       # ok
+hello.get("name", "zero")  # rejected: the default must be a uint256
+hello.get("name", -1)      # rejected: -1 does not fit in a uint256
+```
+
+An integer literal takes the value type of the dict, so you do not need to write the type. The default must be a literal or a constant.
+
+### `get` without a default
+
+If you leave the default out, Baretta uses the default value of the type. The compiler decides this, so you never have to write it.
+
+| Value type | Default |
+| --- | --- |
+| integers (`int64`, `uint64`, `uint256`, ...) | `0` |
+| `str` | `""` |
+| `bytes` | `b""` |
+| `bool` | `False` |
+| `list` | an empty list |
+| `dict` | an empty dict |
+
+```python
+balance = hello.get("name")  # 0 if "name" is missing
+```
+
+<Warning>
+  Some types have no safe default, for example an address or a type you define yourself. For these types the compiler rejects `get(key)` and asks you to give a default or use `find`. A silent "zero" is a dangerous value for such types.
+</Warning>
+
+<Note>
+  This is different from Python, where `dict.get(key)` returns `None` when the key is missing. Baretta has no `None` value, so it returns the default of the type instead.
+</Note>
+
+### `find`
+
+Use `find` when you want to handle the missing key yourself. It returns a [Lookup](/baretta/lookup).
+
+```python
+price = hello.find("price")
+if price.is_err():
+    print(price.reason())
+```
+
+## Lists
+
+Lists work the same way. A missing value means the index is out of range.
+
+```python
+myf = list(str)
+myf.append("name")
+
+myf[0]                # "name", or a crash if the index is out of range
+myf.get(5, "none")    # "none", because index 5 does not exist
+myf.get(5)            # "", the default of str
+myf.find(5)           # a Lookup that holds an error
+```
+
+## Which style should I use?
+
+| I want to... | Use |
+| --- | --- |
+| be sure the key exists, and stop if it does not | `hello[key]` |
+| always get a value, with a fallback I choose | `hello.get(key, default)` |
+| always get a value, with the default of the type | `hello.get(key)` |
+| read the reason or decide what to do myself | `hello.find(key)` |
+
+See [Lookup](/baretta/lookup) for the methods of `find` and for functions that can fail.

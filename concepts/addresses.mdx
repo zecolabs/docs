@@ -1,0 +1,23 @@
+---
+title: "Addresses"
+description: "The address format used across the network."
+---
+
+An address is the prefix `rx` followed by 40 lowercase hexadecimal characters.
+
+```text
+rx000000000000000000000000000000000000dead
+```
+
+| Part | Length | Notes |
+| --- | --- | --- |
+| Prefix | 2 characters | Always `rx` |
+| Body | 40 characters | Lowercase hexadecimal, 20 bytes |
+
+In a transaction body, the `to` field holds the 20 bytes of the address, which you get by decoding the 40 hex characters after the `rx` prefix.
+
+<Note>
+  Other values use the same `rx` prefix, including transaction hashes (`rx` + 64 hex characters), public keys, block hashes, and signatures.
+</Note>
+
+An address that does not match this format is rejected by the RPC with the error `invalid address, must be rx + 40 hex`.

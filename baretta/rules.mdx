@@ -1,0 +1,72 @@
+---
+title: "Baretta Rules"
+description: "The coding style rules for writing contracts in Baretta."
+---
+
+Baretta has a code style that we call the **Baretta Rules**. It adds two main things to Python: required types and pointers.
+
+## Types must be declared
+
+In normal Python, parameters can be anything, and a function can return anything.
+
+```python
+def hello(a, b):
+    # a and b can be anything. Even if b is not a list, this still runs.
+    b.append(a)        # a can be any type
+    b.append("str")    # you can add a str
+    b.append(int)      # you can even add a class
+    # The return value is None by default
+    return {"hello": "test"}  # no return type is needed
+```
+
+In Baretta, the types of the parameters and the return value must be known.
+
+```python
+def hello(a: str, b: list[int]) -> bool:
+    b.append(a)    # fails: b is a list of int, but a is a str
+    return "test"  # fails: the declared return type is bool
+```
+
+Both lines above are rejected. A correct version looks like this:
+
+```python
+def hello(a: int64, b: list[int64]) -> bool:
+    b.append(a)
+    return True
+```
+
+If a function has no declared return type, it returns `None` by default.
+
+## Pointers
+
+In normal Python, a function cannot change a string that you pass in. The `+=` below creates a new string inside the function, and the original `v` stays the same.
+
+```python
+def myfunc(a):
+    a += " changed"
+    return a
+
+v = "test call and"
+myfunc(v)         # v is not changed
+v = myfunc(v)     # the only way is to assign the returned value back
+```
+
+default in baretta every dynamic type thrown is a pointer, same as `list` and `dict` in normal python.
+
+```python
+def myfunc(a: str):
+    # a points to the original value, so changing a changes it
+    a += " changed"
+
+v = "test call and"
+myfunc(v)
+# v is now "test call and changed"
+
+# you can also copy `v`
+x = myfunc(v.copy())
+# v will not change because you passed a copy, not a pointer
+# x is None because myfunc does not return anything
+```
+
+for small static data types with small memory they are set immutable.
+

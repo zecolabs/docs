@@ -1,0 +1,80 @@
+---
+title: "Get block"
+description: "Get the details of a block by its number."
+---
+
+`GET /block/:number`
+
+```python
+r = requests.get(rpc_url + "/block/1")
+block = r.json()
+
+STATUS = ["processed", "confirmed", "finalized"]
+status = STATUS[block["status"]] if block.get("status") is not None else "not found"
+print(status)
+```
+
+## Status values
+
+| Value | Meaning |
+| --- | --- |
+| `0` | processed |
+| `1` | confirmed |
+| `2` | finalized |
+
+## Response
+
+```json
+{
+  "status": 2,
+  "version": 1,
+  "chainid": 1,
+  "blocknumber": 1,
+  "blockhash": "rx3c43c10a4c80dc61cea4393e32ef6456a5d84a927c3ed7d1dea6f24c36a9ad25",
+  "timestamp": "1792848756",
+  "worker": {
+    "address": "rx86955906db9d5238ad51f0a96551f05b414df9e8",
+    "public_key": "rxfd6a70b3723e93648f8f4c36c44a0cd11a36a7af9fdb214c3883681ab8e245ee"
+  },
+  "previous_blockhash": "rx497e4d889272a21577530dafa065176fe0933d13eb4e664ef0ff5bb5bde1f9b7",
+  "state_root": "rxb3da0d14aab248b53900f2e9e4d88fdd4df4f773717f0e1ee4242122f20f86a4",
+  "transaction_root": "rx0000000000000000000000000000000000000000000000000000000000000000",
+  "power_used": 0,
+  "power_limit": 2400000,
+  "fees_collected": "0",
+  "tips_collected": "0",
+  "transaction_count": 0,
+  "transaction": [],
+  "signature": "rxa87a3b021f8f600177b25b71f4bfc08d450a0aa7c0248a37b120ef31c916fa182d245f17924f6a73a4571338e0a82531f57564375a8c28da3b9596698650280d"
+}
+```
+
+## Fields
+
+| Field | Type | Description |
+| --- | --- | --- |
+| `status` | uint8 | See status values above |
+| `version` | uint8 | Block format version |
+| `chainid` | uint32 | Chain identifier |
+| `blocknumber` | uint64 | Block number |
+| `blockhash` | string | Block hash |
+| `timestamp` | uint64 | Block timestamp |
+| `worker` | object | `address` and `public_key` of the worker that produced the block |
+| `previous_blockhash` | string | Hash of the previous block |
+| `state_root` | string | State root after this block |
+| `transaction_root` | string | Root of the block's transactions |
+| `power_used` | uint64 | Total power used in the block |
+| `power_limit` | uint64 | Power limit of the block |
+| `fees_collected` | uint256 | Total fees collected |
+| `tips_collected` | uint256 | Total tips collected |
+| `transaction_count` | uint16 | Number of transactions |
+| `transaction` | array | Hashes of the transactions in the block |
+| `signature` | string | Block signature |
+
+## Errors
+
+```json
+{
+  "error": "block not found"
+}
+```

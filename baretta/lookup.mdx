@@ -1,0 +1,107 @@
+---
+title: "Lookup"
+description: "How Baretta handles operations that can fail."
+---
+
+Baretta does not have `try` and `except`. Instead, operations that can fail return a `Lookup`. This includes `find` on a dict or list, and any function you write that can fail.
+
+A `Lookup[uint256]` is a lookup that holds a `uint256` value when it succeeds.
+
+```python
+hello = dict(str, uint256)
+hello.update("base", 100)
+
+a = hello.find("base")  # Lookup[uint256]
+```
+
+<Note>
+  The other ways to read a value (`hello[key]` and `hello.get(...)`) are described in [Lists and dicts](/baretta/collections).
+</Note>
+
+## Methods
+
+| Member | Returns |
+| --- | --- |
+| `found` | `True` if the lookup holds a value, otherwise `False` |
+| `is_err()` | `True` if the lookup is an error. For `find`, this means the key is missing |
+| `reason()` | The error message. It is an empty string if there is no error |
+| `ok()` | The value. If the lookup is an error, the program crashes |
+| `or_revert(message)` | The value. If the lookup is an error, the program crashes with your message |
+| `default(n)` | The value, or `n` if the lookup is an error |
+
+The reason of a missing key names the dict and the key, for example `key 'base' not found in 'hello'`.
+
+## Handling an error
+
+Use `default` to set a fallback value:
+
+```python
+# if "base" is missing, base becomes 100
+base = hello.find("base").default(100)
+```
+
+<Tip>
+  For a dict or list, `hello.get("base", 100)` does the same and is shorter.
+</Tip>
+
+Or check with `if`:
+
+```python
+found = hello.find("base")
+if found.is_err():
+    print(found.reason())
+    base = 1
+else:
+    base = found.ok()
+```
+
+Or stop with your own message. This is useful on-chain, where the message ends up in the revert reason:
+
+```python
+base = hello.find("base").or_revert("base is not set")
+```
+
+If you call `ok()` directly and the lookup is an error, the program crashes:
+
+```python
+base = hello.find("base").ok()
+```
+
+<Warning>
+  On a node, a crash reverts the whole transaction. In the terminal, Baretta prints the reason and exits with an error code. The code you write is the same in both places.
+</Warning>
+
+## Returning a Lookup
+
+A function can return a `Lookup`. Use `Ok(value)` for success and `Err(reason)` for failure.
+
+```python
+def check_value(a: uint64) -> Lookup[bytes]:
+    if a == 10:
+        # return an error with the reason "fail"
+        return Err("fail")
+    # return a successful lookup with a bytes value
+    return Ok(b"success")
+```
+
+The error is always a text message, you cannot customize the error type. The caller uses the same methods as above:
+
+```python
+data = check_value(10).default(b"none")
+```
+
+## A Lookup is not its value
+
+You cannot use a `Lookup` where a value is expected. The compiler rejects it and tells you how to fix it:
+
+```python
+a = hello.find("base")
+
+b = a + 1          # rejected: a is a Lookup[uint256], not a uint256
+b = a.ok() + 1     # ok
+```
+
+<Note>
+  In the future, we will add other handling objects to achieve efficiency.
+</Note>
+

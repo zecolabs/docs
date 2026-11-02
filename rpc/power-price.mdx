@@ -1,0 +1,21 @@
+---
+title: "Get power price"
+description: "Get the current price per unit of power."
+---
+
+`GET /power_price`
+
+```python
+r = requests.get(rpc_url + "/power_price")
+print(r.json())
+```
+
+## Response
+
+```json
+{
+  "power_price": "100000000000"
+}
+```
+
+Use this value for the `price_per_power` field of your transaction.

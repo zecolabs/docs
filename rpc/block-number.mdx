@@ -1,0 +1,19 @@
+---
+title: "Get block number"
+description: "Get the latest block number."
+---
+
+`GET /block_number`
+
+```python
+r = requests.get(rpc_url + "/block_number")
+print(r.json())
+```
+
+## Response
+
+```json
+{
+  "block_number": 6343
+}
+```

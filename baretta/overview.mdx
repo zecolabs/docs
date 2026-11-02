@@ -1,0 +1,45 @@
+---
+title: "BarettaVM"
+description: "A deterministic virtual machine for smart contracts and secure local execution."
+---
+
+Baretta is a deterministic, bytecode-based virtual machine. It is designed for blockchain smart contracts and for secure local execution.
+
+- **Deterministic:** the same code with the same input always gives the same result.
+- **Ahead-of-time (AOT) compilation:** Baretta can compile code to native code before it runs, and it saves the compiled code in a persistent cache.
+- **Controlled execution:** the Baretta runtime and its defined execution rules always govern how code runs.
+
+You can use BarettaVM on the blockchain or locally on your own computer.
+
+## How it works
+
+<Steps>
+  <Step title="Write Python code">
+    Write your smart contract in Python, following the [Baretta Rules](/baretta/rules).
+  </Step>
+  <Step title="Compile to Python bytecode">
+    Your code is compiled to Python bytecode instructions.
+  </Step>
+  <Step title="Translate to the Baretta ISA">
+    The instructions are translated to the Baretta instruction set (ISA). This ISA is static.
+  </Step>
+  <Step title="Compile with the Baretta AOT compiler">
+    The Baretta AOT compiler turns the static ISA instructions into an executable object.
+  </Step>
+  <Step title="Run with the Baretta runtime">
+    The Baretta runtime runs the executable object.
+  </Step>
+</Steps>
+
+## Why Python?
+
+Python is easy to read and easy to learn. Even beginners can pick it up quickly, so more people can write smart contracts without learning a new language first.
+
+## What is different from normal Python?
+
+The main difference is the coding style. You may need a little time to adjust. These pages explain the changes:
+
+- [Data types](/baretta/types): Baretta supports a limited set of types.
+- [Baretta Rules](/baretta/rules): types must be declared, and pointers are available.
+- [Lists and dicts](/baretta/collections): collections hold one type of value.
+- [Lookup](/baretta/lookup): how errors are handled.

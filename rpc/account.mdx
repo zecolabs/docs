@@ -1,0 +1,47 @@
+---
+title: "Get account"
+description: "Get the balance and nonce of an address."
+---
+
+`GET /account/:address`
+
+```python
+account = requests.get(rpc_url + "/account/rx000000000000000000000000000000000000dead")
+print(account.json())
+```
+
+## Response
+
+```json
+{
+  "address": "rx000000000000000000000000000000000000dead",
+  "balance": "11910600000100600000",
+  "nonce": 0,
+  "pending_nonce": 0
+}
+```
+
+| Field | Type | Description |
+| --- | --- | --- |
+| `address` | string | The queried address |
+| `balance` | string | Account balance (uint256) |
+| `nonce` | Int | Current nonce (uint64) |
+| `pending_nonce` | Int | Nonce including pending transactions (uint64) |
+
+## Errors
+
+If the account has never created a transaction or has no balance:
+
+```json
+{
+  "error": "account not found"
+}
+```
+
+If the address format is wrong:
+
+```json
+{
+  "error": "invalid address, must be rx + 40 hex"
+}
+```

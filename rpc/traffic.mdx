@@ -1,0 +1,29 @@
+---
+title: "Get tip recommendation"
+description: "Get recommended tip values."
+---
+
+`GET /traffic`
+
+```python
+r = requests.get(rpc_url + "/traffic")
+print(r.json())
+```
+
+## Response
+
+```json
+{
+  "min": "40000000000000",
+  "medium": "40000000000000",
+  "fast": "40000000000000"
+}
+```
+
+| Field | Type | Description |
+| --- | --- | --- |
+| `min` | string | Minimum recommended tip (uint256) |
+| `medium` | string | Medium recommended tip (uint256) |
+| `fast` | string | Fast recommended tip (uint256) |
+
+Use one of these values for the `tip` field of your transaction.

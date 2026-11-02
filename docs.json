@@ -1,0 +1,87 @@
+{
+  "$schema": "https://mintlify.com/docs.json",
+  "theme": "mint",
+  "name": "ZecoLabs",
+  "colors": {
+    "primary": "#B95C00",
+    "light": "#E0832A",
+    "dark": "#B95C00"
+  },
+  "appearance": {
+    "default": "light"
+  },
+  "logo": {
+    "light": "/logo-light.svg",
+    "dark": "/logo-dark.svg"
+  },
+  "favicon": "/favicon.png",
+  "navigation": {
+    "groups": [
+      {
+        "group": "Getting started",
+        "pages": [
+          "index"
+        ]
+      },
+      {
+        "group": "BarettaVM",
+        "pages": [
+          "baretta/overview",
+          "baretta/types",
+          "baretta/rules",
+          "baretta/collections",
+          "baretta/lookup"
+        ]
+      },
+      {
+        "group": "Blockchain",
+        "pages": [
+          "concepts/addresses",
+          "concepts/transactions"
+        ]
+      },
+      {
+        "group": "RPC API",
+        "pages": [
+          "rpc/overview",
+          "rpc/send-transaction",
+          "rpc/account",
+          "rpc/traffic",
+          "rpc/transaction",
+          "rpc/block",
+          "rpc/block-number",
+          "rpc/power-price",
+          "rpc/chain-id",
+          "rpc/token-supply"
+        ]
+      },
+      {
+        "group": "Tools",
+        "pages": [
+          "wallet"
+        ]
+      }
+    ]
+  },
+  "navbar": {
+    "links": [
+      {
+        "label": "GitHub",
+        "href": "https://github.com/zecolabs/wallet"
+      }
+    ],
+    "primary": {
+      "type": "button",
+      "label": "Be early supporter",
+      "href": "https://t.me/zecolabsbot"
+    }
+  },
+  "footer": {
+    "socials": {
+      "x": "https://x.com/zecolabs",
+      "github": "https://github.com/zecolabs",
+      "discord": "https://discord.zecolabs.com",
+      "telegram": "https://t.me/zecolabs"
+    }
+  }
+}

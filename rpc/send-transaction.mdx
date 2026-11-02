@@ -1,0 +1,39 @@
+---
+title: "Send transaction"
+description: "Send a signed transaction to the blockchain."
+---
+
+`POST /send_transaction`
+
+Send the signed transaction body as raw bytes. See [Transactions](/concepts/transactions) for how to build `tx_body`.
+
+```python
+import requests
+
+r = requests.post(
+    rpc_url + "/send_transaction",
+    data=tx_body,
+    headers={"Content-Type": "application/octet-stream"},
+)
+print(r.json())
+```
+
+## Response
+
+On success, the response contains the transaction hash (`rx` + 64 hex characters):
+
+```json
+{
+  "hash": "rx0726f08285801c8bae31390693371de5170e105e680ae552306f58a1e6a35a0f"
+}
+```
+
+On failure, the response contains an error message:
+
+```json
+{
+  "error": "error message"
+}
+```
+
+You can also compute the hash yourself. See [Transaction hash](/concepts/transactions#transaction-hash).

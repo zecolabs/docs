@@ -1,0 +1,42 @@
+---
+title: "RPC overview"
+description: "Base URL, conventions, and error format for the RPC API."
+---
+
+## Base URL
+
+The examples in this documentation use a local node:
+
+```python
+import requests
+
+rpc_url = "http://127.0.0.1:3000"
+```
+
+## Endpoints
+
+| Method | Path | Description |
+| --- | --- | --- |
+| POST | `/send_transaction` | [Send a signed transaction](/rpc/send-transaction) |
+| GET | `/account/:address` | [Get account info](/rpc/account) |
+| GET | `/traffic` | [Get tip recommendations](/rpc/traffic) |
+| GET | `/transaction/:tx_hash` | [Get transaction details](/rpc/transaction) |
+| GET | `/block/:number` | [Get block details](/rpc/block) |
+| GET | `/block_number` | [Get the latest block number](/rpc/block-number) |
+| GET | `/power_price` | [Get the current power price](/rpc/power-price) |
+| GET | `/chainid` | [Get the chain ID](/rpc/chain-id) |
+| GET | `/token_supply` | [Get token supply details](/rpc/token-supply) |
+
+## Number format
+
+Large integers (`uint64` and `uint256`) are returned as decimal strings, for example `"balance": "11910600000100600000"`. Smaller values such as `status`, `version`, `chainid`, and `position` are returned as JSON numbers.
+
+## Errors
+
+When a request fails, the response contains a single `error` field with a message.
+
+```json
+{
+  "error": "The error explanation is here"
+}
+```

@@ -1,0 +1,64 @@
+---
+title: "Transactions"
+description: "How to build, sign, and hash a transaction."
+---
+
+A transaction is sent to the network as a single byte string: the unsigned body followed by its signature.
+
+## Unsigned body
+
+The body is a concatenation of the fields below, in this exact order. Each field is encoded as bytes, and the result is the plain concatenation of all fields (in Python, `b"".join(body)`).
+
+| Field | Type | Description |
+| --- | --- | --- |
+| `version` | uint8 | Transaction format version |
+| `chainid` | uint32 | Chain identifier, in bytes |
+| `action` | uint8 | The action to perform (`0` is a transfer) |
+| `sender` | bytes32 | Ed25519 public key of the sender |
+| `to` | bytes20 | Recipient, from the 40 hex characters of the address |
+| `nonce` | uint64 | Sender nonce, in bytes |
+| `amount` | uint256 | Amount to send, in bytes |
+| `power` | uint64 | Power for the transaction, in bytes |
+| `power_limit` | uint64 | Maximum power the sender allows, in bytes |
+| `price_per_power` | uint256 | Price paid per unit of power, in bytes |
+| `packet` | bytes | Packet type. A plain transfer has no packet |
+| `tip` | uint256 | Tip, in bytes |
+
+<Note>
+  This is an initial explanation. The exact byte encoding of each field is defined in [This Repository](https://github.com/zecolabs/wallet/tree/main/python3_cli/python/zecowallet).
+</Note>
+
+## Signing
+
+The signature is an Ed25519 signature over the Keccak-256 hash of a domain prefix and the unsigned body.
+
+```python
+TX_DOMAIN = b"\x01"
+
+hash_to_sign = keccak256(TX_DOMAIN + unsigned_body)
+signature = Ed25519.Sign(hash_to_sign, private_key_bytes)
+
+tx_body = unsigned_body + signature
+```
+
+`tx_body` is what you send to the node through the [Send transaction](/rpc/send-transaction) endpoint.
+
+## Transaction hash
+
+The RPC returns the hash when you send a transaction. You can also compute it yourself from the signed body:
+
+```python
+tx_hash = keccak256(tx_body).hex()
+```
+
+Add the `rx` prefix to compare it with the hash format returned by the RPC.
+
+## Fees
+
+In the examples in this documentation, the fee equals the power used multiplied by the price per power:
+
+```text
+1200 x 100000000000 = 120000000000000
+```
+
+The tip is tracked separately. Use the [Traffic](/rpc/traffic) endpoint for tip recommendations and the [Power price](/rpc/power-price) endpoint for the current price per power.

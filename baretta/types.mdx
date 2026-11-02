@@ -1,0 +1,32 @@
+---
+title: "Data types"
+description: "The data types supported in Baretta."
+---
+
+Not every Python data type is useful for smart contracts. For this reason, Baretta limits the data types to the list below.
+
+| Type | Description |
+| --- | --- |
+| `None` | No value |
+| `bool` | True or false |
+| `int64` | Signed 64-bit integer. This is the default for integers |
+| `uint64` | Unsigned 64-bit integer |
+| `uint128` | Unsigned 128-bit integer |
+| `uint256` | Unsigned 256-bit integer |
+| `str` | Text |
+| `bytes` | Raw bytes |
+| `list` | A list of values of one type. See [Lists and dicts](/baretta/collections) |
+| `dict` | A map of keys to values. See [Lists and dicts](/baretta/collections) |
+| `pointer` (`ptr`) | A reference to a value. See [Baretta Rules](/baretta/rules#pointers) |
+| `function` | A function |
+| `class` | A class |
+| `module` | A module |
+| `Lookup` | The result of an operation that can fail. See [Lookup](/baretta/lookup) |
+
+An integer written without a type is `int64` by default.
+<Note>
+  Details about all additional types will be provided when everything is stable and maybe there will be additional types in the future.
+</Note>
+## No try and except
+
+Baretta removes `try` and `except`, because smart contracts do not need them. Use [Lookup](/baretta/lookup) to handle errors instead.
